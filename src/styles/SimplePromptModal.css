@@ -1,0 +1,264 @@
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #7ed6df;
+  --background-color: #f7f9fc;
+  --text-color: #2c3e50;
+  --border-color: #e0e6ed;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.simple-prompt-modal {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px var(--shadow-color);
+  max-width: 600px;
+  width: 100%;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.simple-prompt-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.simple-prompt-modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.simple-prompt-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.simple-prompt-modal-close:hover {
+  transform: rotate(90deg);
+}
+
+.simple-prompt-modal-content {
+  padding: 25px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.simple-prompt-input-group {
+  margin-bottom: 20px;
+}
+
+.simple-prompt-input-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.simple-prompt-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.simple-prompt-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.simple-prompt-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.simple-prompt-button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+}
+
+.simple-prompt-dropdown {
+  position: relative;
+}
+
+.simple-prompt-dropdown-trigger {
+  width: 100%;
+  text-align: left;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.simple-prompt-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  z-index: 10;
+}
+
+.simple-prompt-modal .section-label {
+  font-size: 0.575rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.125em;
+  color: var(--text-color);
+  opacity: 0.65;
+  margin-bottom: 0.375rem;
+  position: relative;
+  padding-bottom: 0.25rem;
+}
+
+.simple-prompt-modal .section-label::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  height: 1px;
+  background-color: var(--primary-color);
+  opacity: 0.5;
+}
+
+.simple-prompt-modal select {
+  font-size: 0.725rem;
+  font-weight: 400;
+  color: var(--text-color);
+  padding: 6px 10px;
+  line-height: 1.4;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.simple-prompt-modal select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.simple-prompt-modal select option {
+  font-size: 0.725rem;
+  padding: 6px 10px;
+  background-color: white;
+}
+
+.simple-prompt-modal select:hover {
+  border-color: var(--primary-color);
+  transition: border-color 0.2s ease;
+}
+
+.preview-prompt {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  max-height: 600px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preview-prompt h1 {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.preview-prompt h1::before {
+  content: '🔑';
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.preview-prompt code {
+  background-color: #e8e8e8;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.preview-prompt ul, .preview-prompt ol {
+  padding-left: 25px;
+  margin: 10px 0;
+}
+
+.preview-prompt li {
+  margin-bottom: 5px;
+  line-height: 1.6;
+}
+
+.preview-prompt blockquote {
+  border-left: 4px solid #3498db;
+  padding-left: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .simple-prompt-modal {
+    width: 95%;
+    margin: 2.5%;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.drop-target {
+  transition: all 0.2s ease;
+}
+
+.drop-target:focus, 
+.drop-target[data-dragging="true"] {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.drop-target::placeholder {
+  color: #9ca3af;
+}

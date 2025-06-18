@@ -1,0 +1,162 @@
+@import 'highlight.js/styles/github.css';
+@import 'highlight.js/styles/github-dark.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    @apply text-sm bg-white dark:bg-gray-900;
+  }
+
+  h1 {
+    @apply text-2xl font-semibold;
+  }
+
+  h2 {
+    @apply text-xl font-semibold;
+  }
+
+  h3 {
+    @apply text-lg font-medium;
+  }
+
+  h4 {
+    @apply text-base font-medium;
+  }
+
+  p {
+    @apply text-sm;
+  }
+}
+
+.hljs {
+  @apply bg-transparent !important;
+  @apply text-gray-800 dark:text-gray-200 !important;
+}
+
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-doctag,
+.dark .hljs-name,
+.dark .hljs-strong {
+  @apply text-blue-400 !important;
+}
+
+.dark .hljs-string,
+.dark .hljs-attr,
+.dark .hljs-template-tag {
+  @apply text-green-400 !important;
+}
+
+.dark .hljs-number,
+.dark .hljs-literal {
+  @apply text-orange-400 !important;
+}
+
+.dark .hljs-comment,
+.dark .hljs-quote {
+  @apply text-gray-500 !important;
+}
+
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50;
+}
+
+.modal-content {
+  @apply fixed inset-x-4 top-0 bottom-0 sm:inset-auto sm:top-[10vh] sm:left-[50%] sm:transform sm:-translate-x-1/2 sm:max-w-lg sm:w-full sm:max-h-[90vh] bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 flex flex-col overflow-hidden;
+}
+
+.modal-header {
+  @apply px-4 py-3 border-b border-gray-200 dark:border-gray-700;
+}
+
+.modal-body {
+  @apply flex-1 overflow-y-auto p-4;
+}
+
+.modal-footer {
+  @apply px-4 py-3 border-t border-gray-200 dark:border-gray-700;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600;
+}
+
+.code-block {
+  @apply relative bg-gray-50 dark:bg-gray-800 rounded-lg p-4 overflow-x-auto border border-gray-200 dark:border-gray-700;
+}
+
+.code-header {
+  @apply flex justify-between items-center mb-2 text-sm font-medium text-gray-600 dark:text-gray-300;
+}
+
+.code-actions {
+  @apply flex items-center gap-2;
+}
+
+.code-action-btn {
+  @apply p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 transition-colors;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 0);
+  }
+
+  25% {
+    transform: translate(-1px, 0);
+  }
+
+  50% {
+    transform: translate(1px, 0);
+  }
+
+  75% {
+    transform: translate(-1px, 0);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+.border-red {
+  border: 2px solid red;
+}
+
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+pre[class*="language-"] {
+  margin: 0;
+  padding: 1rem;
+  background: transparent !important;
+}
+
+code[class*="language-"] {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}

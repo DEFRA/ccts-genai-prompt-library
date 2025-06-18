@@ -1,0 +1,1 @@
+export const generateUniqueId = () => `id-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1)).toString(36).slice(2, 11)}`; 

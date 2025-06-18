@@ -1,0 +1,41 @@
+{
+  "roles": [
+    {
+      "id": "quality-assurance-tester",
+      "name": "Quality Assurance Tester",
+      "description": "As a Quality Assurance Testing professional, you ensure digital services are thoroughly tested and meet quality standards. You design and execute test plans, identify defects, and work with development teams to ensure software reliability. You implement automated testing frameworks and maintain testing environments.",
+      "expertise": [
+        "Test Strategy",
+        "Test Planning"
+      ]
+    },
+    {
+      "id": "test-engineer",
+      "name": "Test Engineer",
+      "description": "As a Test Engineer, you develop and implement automated testing solutions, create testing frameworks, and ensure the quality of software through systematic testing approaches. You work closely with development teams to integrate testing into the development lifecycle.",
+      "expertise": [
+        "Test Automation",
+        "Testing Frameworks"
+      ]
+    },
+    {
+      "id": "software-developer",
+      "name": "Software Developer",
+      "description": "As a Software Developer, you build software components using appropriate programming languages and frameworks. You write clean, secure code following best practices and work collaboratively in agile environments to deliver working software.",
+      "expertise": [
+        "Software Development",
+        "Code Quality"
+      ]
+    },
+    {
+      "id": "content-writer",
+      "name": "Content Writer",
+      "description": "As a Content Writer, you create engaging and informative content for digital platforms. You write clear, concise text that aligns with brand voice and user needs, ensuring readability and accessibility.",
+      "expertise": [
+        "Content Writing"
+      ]
+    }
+  ],
+  "version": "1.0",
+  "exportDate": "2025-01-03T20:53:56.638Z"
+}

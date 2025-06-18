@@ -1,0 +1,493 @@
+[
+  {
+    "id": "m3xlbow2-qcqbno", 
+    "name": "Code Completion",
+    "role": "software-developer",
+    "expertise": "Software Development",
+    "description": "Get intelligent code completion suggestions following industry best practices, design patterns, and clean code principles",
+    "showProgrammingLanguage": true,
+    "raceRole": "Act as an expert Software Developer with deep knowledge of software design patterns, clean code principles, and modern development practices across multiple programming languages.",
+    "raceAction": "Analyze the code context and provide completion suggestions that follow:\n- Clean Code principles and SOLID design\n- Industry standard design patterns\n- Modern language features and idioms\n- Security best practices\n- Performance optimization techniques",
+    "raceContext": "Consider the following when providing suggestions:\n- Surrounding code context and patterns\n- Project architecture and conventions\n- Language-specific best practices\n- Security implications\n- Performance impact\n- Maintainability",
+    "raceExecute": "Generate code completion ensuring:\n- Consistent code style and naming\n- Proper error handling patterns\n- Security measures and input validation\n- Efficient implementation\n- Clear inline documentation\n- Testability considerations\n- Integration with existing code",
+    "customSections": [
+      {
+        "id": "code-snippet-2",
+        "name": "Code Context",
+        "description": "Provide the code context where completion is needed",
+        "type": "textarea", 
+        "isVisible": true,
+        "required": true,
+        "options": [],
+        "inputValidation": {
+          "type": "code-snippet",
+          "pattern": ".*",
+          "errorMessage": "Please provide valid code context for completion."
+        },
+        "label": "",
+        "placeholder": "Enter the code context where you need completion suggestions"
+      }
+    ],
+    "createdBy": "user",
+    "createdAt": "2025-01-03T19:52:10.909Z",
+    "updatedAt": "2025-01-03T19:52:10.909Z",
+    "isDefault": false
+  },
+  {
+    "id": "m3uey5hw-a365ra-lang-trans",
+    "name": "Language Translation",
+    "role": "software-developer",
+    "expertise": "Technical Design",
+    "description": "Translate code between programming languages while preserving logic, patterns, and best practices",
+    "showProgrammingLanguage": false,
+    "raceRole": "Act as a Senior Software Developer specializing in multiple programming languages, design patterns, and cross-platform development.",
+    "raceAction": "Translate the provided code while ensuring:\n- Idiomatic code in target language\n- Equivalent design patterns\n- Performance optimization\n- Error handling patterns\n- Testing approaches",
+    "raceContext": "Consider:\n- Target language best practices\n- Platform-specific considerations\n- Framework equivalents\n- Performance implications\n- Testing framework differences",
+    "raceExecute": "Perform the translation ensuring:\n- Proper language idioms\n- Equivalent error handling\n- Matching performance characteristics\n- Framework-specific optimizations\n- Test coverage maintenance\n- Documentation standards",
+    "customSections": [
+      {
+        "id": "source-lang",
+        "name": "Source Language",
+        "description": "Select the source programming language",
+        "type": "select",
+        "isVisible": true,
+        "required": true,
+        "options": [
+          "Java",
+          "Python",
+          "C#",
+          "JavaScript",
+          "TypeScript",
+          "Groovy",
+          "Ruby"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      },
+      {
+        "id": "target-lang",
+        "name": "Target Language",
+        "description": "Select the target programming language",
+        "type": "select",
+        "isVisible": true,
+        "required": true,
+        "options": [
+          "Java",
+          "Python",
+          "C#",
+          "JavaScript",
+          "TypeScript",
+          "Groovy",
+          "Ruby"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      },
+      {
+        "id": "source-code",
+        "name": "Source Code",
+        "description": "Provide the source code to translate",
+        "type": "textarea",
+        "isVisible": true,
+        "required": true,
+        "options": [],
+        "inputValidation": {
+          "type": "code-snippet",
+          "pattern": ".*",
+          "errorMessage": "Please provide valid source code."
+        },
+        "label": "",
+        "placeholder": ""
+      },
+      {
+        "id": "special-considerations",
+        "name": "Special Considerations",
+        "description": "Select any special considerations for the translation",
+        "type": "multiselect",
+        "isVisible": true,
+        "required": false,
+        "options": [
+          "Async/Await Patterns",
+          "Memory Management",
+          "Threading Model",
+          "Error Handling",
+          "Performance Critical",
+          "Security Sensitive"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      }
+    ],
+    "createdBy": "user",
+    "createdAt": "2024-12-24T10:02:30.633Z",
+    "updatedAt": "2024-12-24T10:02:30.633Z",
+    "isDefault": true
+  },
+  {
+    "id": "54271fe5-7df1-4880-874f-37b2a4081fdf",
+    "name": "Generate tests leveraging TDD",
+    "role": "test-engineer",
+    "expertise": "Test Automation",
+    "description": "Create comprehensive test suites following Test-Driven Development principles with modern testing practices",
+    "showProgrammingLanguage": true,
+    "raceRole": "Act as a Senior Test Engineer with extensive experience in TDD, BDD, and modern testing frameworks.",
+    "raceAction": "Create a comprehensive test suite that:\n- Follows TDD principles\n- Implements proper test patterns\n- Covers edge cases\n- Includes performance considerations\n- Maintains test isolation",
+    "raceContext": "Consider:\n- Application architecture\n- Performance requirements\n- Security needs\n- Integration points\n- Data dependencies",
+    "raceExecute": "Implement tests ensuring:\n- Proper test organization\n- Clear test naming\n- Comprehensive assertions\n- Proper mocking/stubbing\n- Database handling\n- API testing\n- Performance testing",
+    "customSections": [
+      {
+        "id": "requirements",
+        "name": "Requirements",
+        "description": "Describe the functionality to be tested",
+        "type": "textarea",
+        "isVisible": true,
+        "required": true,
+        "options": [],
+        "inputValidation": {
+          "type": "regex",
+          "pattern": ".*",
+          "errorMessage": "Please provide the requirements to test."
+        },
+        "label": "",
+        "placeholder": "Enter the requirements or user stories"
+      },
+      {
+        "id": "test-scope",
+        "name": "Test Scope",
+        "description": "Select the types of tests to generate",
+        "type": "multiselect",
+        "isVisible": true,
+        "required": true,
+        "options": [
+          "Unit Tests",
+          "Integration Tests",
+          "API Tests",
+          "Performance Tests",
+          "Security Tests",
+          "UI Tests",
+          "Database Tests",
+          "Contract Tests"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      },
+      {
+        "id": "test-framework",
+        "name": "Testing Framework",
+        "description": "Select the testing framework to use",
+        "type": "select",
+        "isVisible": true,
+        "required": true,
+        "options": [
+          "JUnit",
+          "TestNG",
+          "NUnit",
+          "PyTest",
+          "Jest",
+          "Mocha",
+          "RSpec",
+          "XCTest"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      }
+    ],
+    "createdBy": "user",
+    "createdAt": "2024-12-24T10:02:30.633Z",
+    "updatedAt": "2024-12-24T10:02:30.633Z",
+    "isDefault": true
+  },
+  {
+    "id": "m3uey5hw-a365ra",
+    "name": "User Story to Scenario",
+    "role": "quality-assurance-tester",
+    "expertise": "Test Strategy",
+    "description": "Create comprehensive BDD scenarios from user stories following GDS standards and best practices",
+    "showProgrammingLanguage": false,
+    "raceRole": "As a Senior Quality Assurance Testing professional within the UK Government Digital Service (GDS), you are responsible for creating comprehensive test strategies and BDD scenarios that ensure quality, accessibility, and compliance.",
+    "raceAction": "Create BDD scenarios ensuring:\n- GDS Design Principles compliance\n- WCAG 2.2 Level AA compliance\n- Security testing coverage\n- Performance testing inclusion\n- Accessibility testing integration",
+    "raceContext": "Consider:\n- GDS service standards\n- Accessibility requirements\n- Security compliance\n- Performance standards\n- User needs and journeys",
+    "raceExecute": "1. Analyze requirements and acceptance criteria\n2. Identify test scenarios and edge cases\n3. Create comprehensive feature files\n4. Include accessibility scenarios\n5. Add security test scenarios\n6. Include performance test scenarios\n7. Document test approach and coverage",
+    "customSections": [
+      {
+        "id": "user-story",
+        "name": "User Story",
+        "description": "Enter the user story and acceptance criteria",
+        "type": "textarea",
+        "isVisible": true,
+        "required": true,
+        "inputValidation": {
+          "type": "regex",
+          "pattern": "",
+          "errorMessage": "Please provide a user story in the format: As a [role] I want to [action] so that [benefit]"
+        },
+        "label": "User Story",
+        "placeholder": "As a [role]\nI want to [action]\nSo that [benefit]"
+      },
+      {
+        "id": "acceptance-criteria",
+        "name": "Acceptance Criteria",
+        "description": "Enter the acceptance criteria",
+        "type": "textarea",
+        "isVisible": true,
+        "required": true,
+        "inputValidation": {
+          "type": "regex",
+          "pattern": "",
+          "errorMessage": "Please provide acceptance criteria"
+        },
+        "label": "Acceptance Criteria",
+        "placeholder": "Given [context]\nWhen [action]\nThen [outcome]"
+      },
+      {
+        "id": "test-considerations",
+        "name": "Test Considerations",
+        "description": "Select additional test considerations",
+        "type": "multiselect",
+        "isVisible": true,
+        "required": true,
+        "options": [
+          "Accessibility Testing",
+          "Security Testing",
+          "Performance Testing",
+          "Mobile Responsiveness",
+          "Cross-Browser Compatibility",
+          "Error Handling",
+          "Data Validation",
+          "User Journey Testing"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      }
+    ],
+    "createdBy": "user",
+    "createdAt": "2024-12-24T10:02:30.633Z",
+    "updatedAt": "2024-12-24T10:02:30.633Z",
+    "isDefault": true
+  },
+  {
+    "id": "m3uey5hw-a365ra-bdd-unique-1",
+    "name": "Scenario to Test Script",
+    "role": "test-engineer",
+    "expertise": "Testing Frameworks",
+    "description": "Create and implement comprehensive BDD scenarios with advanced testing framework integration",
+    "showProgrammingLanguage": true,
+    "raceRole": "Act as a Senior Test Engineer specializing in BDD implementation, testing frameworks, and continuous testing practices.",
+    "raceAction": "Create and implement BDD scenarios with:\n- Advanced framework features\n- Reusable components\n- Custom helpers and utilities\n- Reporting integration\n- CI/CD pipeline setup",
+    "raceContext": "Consider:\n- Framework capabilities\n- Testing infrastructure\n- Reporting needs\n- Integration requirements\n- Performance metrics",
+    "raceExecute": "1. Analyze requirements and create scenarios\n2. Implement step definitions\n3. Create helper functions\n4. Set up reporting\n5. Configure CI/CD integration\n6. Implement parallel execution\n7. Add monitoring and logging",
+    "customSections": [
+      {
+        "id": "bdd-scenarios",
+        "name": "BDD Scenarios",
+        "description": "Enter your BDD scenarios",
+        "type": "textarea",
+        "isVisible": true,
+        "required": true,
+        "options": [],
+        "inputValidation": {
+          "type": "bdd",
+          "pattern": "",
+          "errorMessage": "Please provide valid BDD scenarios in Gherkin syntax"
+        },
+        "label": "",
+        "placeholder": ""
+      }
+    ],
+    "createdBy": "user",
+    "createdAt": "2024-12-24T10:02:30.633Z",
+    "updatedAt": "2024-12-24T10:02:30.633Z",
+    "isDefault": true
+  },
+  {
+    "id": "m5h68plp-KD01cxdz",
+    "name": "Groovy to JavaScript Conversion",
+    "role": "test-engineer",
+    "expertise": "Test Automation",
+    "description": "Convert Katalon Groovy scripts to JavaScript with modern testing practices and framework integration",
+    "showProgrammingLanguage": false,
+    "raceRole": "As a Senior Test Engineer within the UK Government Digital Service (GDS), you specialize in test automation framework migration and modern testing practices.",
+    "raceAction": "Convert Groovy scripts to JavaScript ensuring:\n- Modern JavaScript practices\n- Framework best practices\n- Code quality standards\n- Testing patterns\n- Performance optimization",
+    "raceContext": "Converting test automation framework while considering:\n- Modern JavaScript features\n- Testing framework capabilities\n- Code maintainability",
+    "raceExecute": "1. Analyze Groovy scripts\n2. Plan JavaScript implementation\n3. Implement using modern patterns\n4. Add proper error handling\n5. Implement logging and reporting\n6. Document conversion patterns",
+    "customSections": [
+      {
+        "id": "groovy-code",
+        "name": "Groovy Code",
+        "description": "Enter the Groovy code to convert",
+        "type": "textarea",
+        "isVisible": true,
+        "required": true,
+        "options": [],
+        "inputValidation": {
+          "type": "code-snippet",
+          "language": "groovy",
+          "errorMessage": "Please provide valid Groovy code"
+        },
+        "label": "",
+        "placeholder": "Enter your Groovy code here"
+      },
+      {
+        "id": "js-framework",
+        "name": "JavaScript Framework",
+        "description": "Select the target JavaScript framework",
+        "type": "select",
+        "isVisible": true,
+        "required": true,
+        "options": [
+          "WebdriverIO",
+          "Cypress",
+          "Playwright",
+          "TestCafe",
+          "Nightwatch",
+          "Puppeteer"
+        ],
+        "inputValidation": null
+
+      },
+      {
+        "id": "conversion-options",
+        "name": "Conversion Options",
+        "description": "Select conversion considerations",
+        "type": "multiselect",
+        "isVisible": true,
+        "required": false,
+        "options": [
+          "Async/Await Patterns",
+          "Page Objects",
+          "Cross-Browser Support"
+        ],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      }
+    ]
+
+  },
+  {
+    "id": "template-m5l8u5mg-vtIMb0o2",
+    "name": "Scenario to Manual Test Case",
+    "role": "quality-assurance-tester",
+    "expertise": "Test Strategy",
+    "description": "Create detailed manual test cases from user stories following GDS standards and best practices",
+    "showProgrammingLanguage": false,
+    "raceRole": "You are a Quality Assurance Analyst specializing in manual testing for software development within the UK Government Digital Service (GDS). Your responsibilities include creating detailed and accurate test cases that align with user stories, ensuring they meet GDS standards for usability and accessibility, and facilitating effective communication with development teams.",
+    "raceAction": "Create detailed manual test cases based on the provided user story, ensuring that the output is formatted in CSV format as specified. The test cases should include unique identifiers, appropriate work item type, and structured steps with clearly defined actions and expected results. The ID, Assigned To, and Area Path fields should be left blank, while the Title should be included in the first test step, and the State should default to 'Design'.",
+    "raceContext": "The task requires adherence to GDS standards for test case documentation and must align with the DDaT framework to ensure clarity and usability in the software development life cycle. The test cases should follow a clear numbering sequence for each test step and maintain consistency in language and formatting. The user story and example provided serve as a reference for structure and content.",
+    "raceExecute": "1. Review the provided user story and the example format carefully.\n2. Identify the key actions, conditions, and expected outcomes from the user story that need to be translated into test steps.\n3. Begin the CSV output with columns: ID, Work Item Type, Title, Test Step, Step Action, Step Expected, Automated Test Name, Area Path, Assigned To, and State.\n4. Leave the ID column blank and ensure the Title is included in the first test step.\n5. Auto-number the Test Step field sequentially for clarity.\n6. Assign \"Test Case\" to the Work Item Type in the first step only.\n7. Leave the Assigned To and Area Path fields blank.\n8. Set the State column to \"Design\" for all entries.\n9. Validate the formatted test cases against the provided example to ensure accuracy and completeness before finalizing the CSV output.",
+    "customSections": [
+      {
+        "id": "section-m5l8tp7n-zk28BZFg",
+        "name": "Acceptance Test",
+        "description": "the acceptance test",
+        "type": "textarea",
+        "isVisible": true,
+        "required": false,
+        "options": [],
+        "inputValidation": null,
+        "label": "",
+        "placeholder": ""
+      }
+    ],
+    "createdBy": "user",
+    "createdAt": "2025-01-06T16:15:55.384Z",
+    "updatedAt": "2025-01-06T16:15:55.384Z",
+    "isDefault": false
+  },
+  {
+    "id": "template-m5l8u5mg-vtIMb0o2",
+    "name": "User Story Score Predictor",
+    "description": "Evaluate and enhance user stories based on defined scoring criteria and present the RAG (Red, Amber, Green) status for each criterion.",
+    "role": "quality-assurance-tester",
+    "expertise": "Test Planning",
+    "raceRole": "Act as a **User Story Scoring Analyst** within a product development team, responsible for evaluating and enhancing user stories based on defined scoring criteria. The analyst will have a strong understanding of agile methodologies, user-centered design principles, and the GDS standards for user story creation.",
+    "raceAction": "Evaluate the provided user story against the specified criteria (Independent, Negotiable, Valuable, Estimate, Small, Testable, Clear and Concise, Prioritized, Acceptance Criteria, User-Centric) and assign a score from 1 to 10. Enhance the user story to achieve a perfect score of 10, incorporating all recommendations while presenting the RAG (Red, Amber, Green) status for each criterion.",
+    "raceContext": "The user story must align with the principles of the GDS and agile frameworks, ensuring it is actionable and meets user needs. Constraints include adhering to a maximum character limit for the user story and maintaining clarity for team members who will implement the story. The scoring should reflect both qualitative and quantitative assessments of the story's components.",
+    "raceExecute": "1. **Initial Evaluation**: Analyze the provided user story against each of the 10 criteria. Assign an initial score and determine the RAG status for each aspect:\n   - Red: Not met\n   - Amber: Partially met\n   - Green: Fully met\n\n2. **Enhancement Recommendations**: For each criterion, provide specific recommendations to improve the user story. Focus on making it independent, negotiable, valuable, estimable, small, testable, clear and concise, prioritized, and user-centric.\n\n3. **User Story Revision**: Rewrite the user story incorporating all the enhancements, ensuring each criterion is fully addressed to achieve a score of 10.\n\n4. **Final Scoring**: Re-evaluate the enhanced user story against the criteria, assign the final score, and present the RAG status for the final version.\n\n5. **Documentation**: Present both the original and enhanced user stories, including their scores and RAG status, in a clear and concise format suitable for team review.",
+    "showProgrammingLanguage": false,
+    "customSections": [
+      {
+        "id": "section-c18ae98b-b137-4b0c-af84-d5841f324750",
+        "name": "User Story",
+        "description": "user story",
+        "type": "textarea",
+        "options": [],
+        "required": true,
+        "isVisible": true,
+        "content": ""
+      },
+      {
+        "id": "section-0c39a4f0-b315-416a-882c-364ccfc2be10",
+        "name": "Acceptance Criteria",
+        "description": "acceptance criteria",
+        "type": "textarea",
+        "options": [],
+        "required": true,
+        "isVisible": true,
+        "content": ""
+      }
+    ],
+    "updatedAt": "2025-01-07T11:56:52.695Z",
+    "createdAt": "2025-01-07T11:56:52.695Z",
+    "isDefault": false
+  },
+  {
+    "name": "Generate End-To-End Test cases - Model Office",
+    "description": "Generate end-to-end test cases in .csv format based on the user story,acceptance criteria.Use Historical context as a reference.Ensure to Cover Positive, Negative, and Edge Cases.Sometimes User Story does not include complete end to end flow and only includes limited content.You should cautiously read the User Story, Acceptance Criteria  and ### to come up with complete end to end flow.",
+    "role": "quality-assurance-tester",
+    "expertise": "Test Strategy",
+    "raceRole": "You are a QA Engineer specializing in crafting well-structured and detailed end-to-end manual test designs for a system with two integrated applications. You focus on ensuring the quality and functionality of software by creating detailed test cases and achieving sufficient coverage.\nSpecialization: Crafting well-structured and detailed end-to-end manual test designs for a system with two integrated applications.",
+    "raceAction": "Generate end-to-end test cases in .csv format based on the user story,acceptance criteria.Use Historical context as a reference.Ensure to Cover Positive, Negative, and Edge Cases.Sometimes User Story does not include complete end to end flow and only includes limited content.You should cautiously read the User Story, Acceptance Criteria  and ### to come up with complete end to end flow.",
+    "raceContext": "Context for Historical Test Cases:\nYou have an csv to refer ## which contain historical user stories, acceptance criteria, and test cases. The historical test cases are derived from previous testing cycles.These test cases serve as a reference to create new test cases or update existing ones to maintain the quality and reliability of the application.It should help you write detailed and comprehensive end-to-end manual test cases.",
+    "raceExecute": "Test Design Flow:\nUnderstand the System:Applications involved in End to End flow Refer the csv ### for Application EHCO and IDCOM which includes main functionalities and interaction with other Application.\n \nDefine End-to-End Test Cases Based on Provided User Stories and Acceptance Criteria:\n \nUse the user story provided by the user.\nUse the acceptance criteria provided by the user.\n \nCSV Formatting Instructions:\n \nSteps should be alligned vertically\nEnsure each step of the test case is placed on a new line.\n \n \nWrite Detailed Test Cases for Positive, Negative, and Edge Cases based on Given User Story and Acceptance Criteria:\n- Test cases should be alligned as - Test Case ID,Description,Preconditions,Steps,Expected Results\n-Assign a unique identifier for each test case.\n-Write a brief description of the test case.\n-Specify what should happen at each step (expected results).Do NOT club all the steps together,Keep each step on new line",
+    "customSections": [
+      {
+        "id": "0eb19381-4f89-4af5-8e7e-fb79656adae3",
+        "name": "User Story",
+        "description": "Enter the user story and acceptance criteria",
+        "type": "textarea",
+        "options": [],
+        "required": true,
+        "isVisible": true,
+        "placeholder": "",
+        "content": ""
+      }
+    ],
+    "showProgrammingLanguage": false,
+    "id": "1dd0ba66-9fd2-4682-a862-54b21247c6f5",
+    "createdAt": "2025-02-19T14:29:20.291Z",
+    "updatedAt": "2025-02-19T14:30:55.337Z"
+  },
+  {
+    "id": "template-version-tracker",
+    "name": "Versionary",
+    "description": "Keeping You Updated with the Latest Software Versions",
+    "role": "software-developer",
+    "expertise": "Software Development",
+    "externalUrl": "https://sareportingpoc.blob.core.windows.net/cpintegration/ToolRadar/toolRadar.html",
+    "showProgrammingLanguage": false,
+    "isDefault": true,
+    "createdAt": "2025-01-07T11:56:52.695Z",
+    "updatedAt": "2025-01-07T11:56:52.695Z",
+    "createdBy": "system"
+  },
+  {
+    "id": "content-writing-tool",
+    "name": "StoryForge",
+    "description": "Content Writing Tool",
+    "role": "content-writer",
+    "expertise": "Content Writing",
+    "externalUrl": "https://sareportingpoc.blob.core.windows.net/cpintegration/ToolRadar/defra-newsfeed-generator.html",
+    "showProgrammingLanguage": false,
+    "isDefault": true,
+    "createdAt": "2025-01-07T11:56:52.695Z",
+    "updatedAt": "2025-01-07T11:56:52.695Z",
+    "createdBy": "system"
+  }
+]

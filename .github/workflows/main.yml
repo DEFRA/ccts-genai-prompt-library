@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - 'feature/*'
+  pull_request:
+    branches: 
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+
+    - name: Install Dependencies & Build
+      run: |
+        npm install
+        npm run build
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.projectKey=qea_prompt-laibrary-v2
+          -Dsonar.organization=qea
+          -Dsonar.sources=.
+
+    # - name: Upload to Azure Blob Storage
+    #   uses: azure/cli@v1
+    #   env:
+    #     AZURE_STORAGE_ACCOUNT: sareportingpoc
+    #     AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+    #   run: |
+    #     for file in dist/*; do
+    #       az storage blob upload \
+    #         --account-name $AZURE_STORAGE_ACCOUNT \
+    #         --container-name cpintegration \
+    #         --file "$file" \
+    #         --name "PromptLaibrary2/$(basename "$file")" \
+    #         --auth-mode key \
+    #         --account-key $AZURE_STORAGE_KEY \
+    #         --overwrite
+    #     done
