@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - '**'  # Runs on all branches
+      - '**'
   pull_request:
     branches:
       - main
@@ -21,6 +21,10 @@ jobs:
       with:
         node-version: '18.x'
         cache: 'npm'
+    
+    - name: Validate package.json
+      run: |
+        npx jsonlint package.json
     
     - name: Install dependencies
       run: npm ci
