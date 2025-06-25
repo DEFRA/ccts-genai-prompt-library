@@ -85,7 +85,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://2207164:2euTYaO2VWxEJhJwGbGbIcpyVFB8BYF3qV3CTsHrFpPvZ1e0jeBPJQQJ99BEACAAAAA6DxLKAAASAZDOqFr6@dev.azure.com/QEA/DevOpsTest/_git/prompt-laibrary-v2"
+    // "url": "https://2207164:2euTYaO2VWxEJhJwGbGbIcpyVFB8BYF3qV3CTsHrFpPvZ1e0jeBPJQQJ99BEACAAAAA6DxLKAAASAZDOqFr6@dev.azure.com/QEA/DevOpsTest/_git/prompt-laibrary-v2"
+    "url": "git+https://github.com/DEFRA/CCTS-genAI-Prompt-Library.git"
   },
   "keywords": [],
   "author": "",

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - dev
+      - devg
       - 'feature/*'
   pull_request:
     branches: 
@@ -14,6 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push'
 
     steps:
     - uses: actions/checkout@v4
