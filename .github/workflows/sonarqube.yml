@@ -29,13 +29,13 @@ jobs:
         ls -la
         ls -la coverage/
         
-    - name: Validate SonarQube Test Report Format
+    - name: Validate SonarCloud Test Report Format
       run: |
-        echo "=== Checking SonarQube test report ==="
+        echo "=== Checking SonarCloud test report ==="
         grep -q "<testExecutions" coverage/test-report.xml && echo "✅ VALID: SonarQube XML format confirmed" || echo "⚠️ WARNING: SonarQube XML format may be incorrect"
         
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@master
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} 

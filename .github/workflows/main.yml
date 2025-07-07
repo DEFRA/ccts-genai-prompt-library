@@ -35,3 +35,46 @@ jobs:
         key: ${{ runner.os }}-build-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-build-
+jobs:
+  SonarCloud Scan:   
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0    
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        GITHUB_WORKSPACE: ${{ github.workspace }}
+      with:
+        args:>
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+          -Dsonar.sources=src
+          -Dsonar.tests=src
+          -Dsonar.test.inclusions=**/*.test.js,**/*.spec.js
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.testExecutionReportPaths=coverage/test-report.xml
+          -Dsonar.coverage.exclusions=src/**/*.spec.js,src/**/*.test.js,src/**/*.d.ts
+          -Dsonar.language=js
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.verbose=true
+          -Dsonar.nodejs.executable=$(which node)
+          -Dsonar.nodejs.nodeVersion=18.x
+          -Dsonar.nodejs.npmVersion=$(npm --version)
+          -Dsonar.nodejs.yarnVersion=$(yarn --version)
+          -Dsonar.nodejs.pnpmVersion=$(pnpm --version)
+          -Dsonar.nodejs.packageManager=npm
+          -Dsonar.nodejs.packageManagerVersion=$(npm --version)
+          -Dsonar.nodejs.packageManagerCache=$(npm config get cache)
+          -Dsonar.nodejs.packageManagerLockFile=package-lock.json
+          -Dsonar.nodejs.packageManagerLockFileVersion=$(npm --version)
+          -Dsonar.nodejs.packageManagerLockFileHash=$(git rev-parse HEAD:package-lock.json)
+          -Dsonar.nodejs.packageManagerLockFileSize=$(wc -c < package-lock.json | awk '{print $1}')
+          -Dsonar.nodejs.packageManagerLockFileLastModified=$(git log -1 --format=%cd -- package-lock.json)
+          -Dsonar.nodejs.packageManagerLockFileLastCommit=$(git log -1 --format=%H -- package-lock.json)
+          -Dsonar.nodejs.packageManagerLockFileLastCommitAuthor=$(git log -1 --format=%an -- package-lock.json)
+          -Dsonar.nodejs.packageManagerLockFileLastCommitMessage=$(git log -1 --format=%s -- package-lock.json
