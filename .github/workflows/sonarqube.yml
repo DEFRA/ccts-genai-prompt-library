@@ -22,8 +22,6 @@ jobs:
         
     - name: Install dependencies
       run: npm install
-          - name: Run tests with coverage and generate reports
-      run: |
         npm run test:ci
         echo "=== Checking test report files ==="
         ls -la
@@ -37,5 +35,6 @@ jobs:
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} 
