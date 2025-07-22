@@ -24,11 +24,11 @@ export const SearchBar: React.FC = () => {
                    placeholder-gray-500 dark:placeholder-gray-400
                    focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 
                    transition-all duration-200"
-        />
-        {searchTerm && (
+        />        {searchTerm && (
           <button
             onClick={() => setSearchTerm("")}
             className="absolute inset-y-0 right-0 pr-2 flex items-center"
+            data-testid="clear-search-button"
           >
             <X className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
           </button>

@@ -7,8 +7,6 @@ const debug = (...args: any[]) => {
   }
 };
 
-const roleModules = import.meta.glob("./Roles/*.json", { eager: true });
-
 const processRole = (role: any): Role | null => {
   if (!role?.id || !role?.name) {
     debug("Invalid role data:", role);
@@ -46,11 +44,12 @@ const processRoleFile = (filePath: string, module: any): Role[] => {
   return validRoles;
 };
 
-const loadRolesFromFiles = (): Role[] => {
+const loadRolesFromFiles = (roleModules: () => Record<string, any>): Role[] => {
+  const modules = roleModules();
   debug("Starting to load roles from files");
-  debug("Available role modules:", Object.keys(roleModules));
+  debug("Available role modules:", Object.keys(modules));
 
-  return Object.entries(roleModules).flatMap(([filePath, module]) => {
+  return Object.entries(modules).flatMap(([filePath, module]) => {
     try {
       debug(`Processing file: ${filePath}`);
       return processRoleFile(filePath, module);
@@ -61,4 +60,9 @@ const loadRolesFromFiles = (): Role[] => {
   });
 };
 
-export const defaultRoles: Role[] = loadRolesFromFiles();
+export function getDefaultRoles(roleModules?: () => Record<string, any>): Role[] {
+  const loader = roleModules ?? (() => import.meta.glob("./Roles/*.json", { eager: true }));
+  return loadRolesFromFiles(loader);
+}
+
+export const defaultRoles = getDefaultRoles();

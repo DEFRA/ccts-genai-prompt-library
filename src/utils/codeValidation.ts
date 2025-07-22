@@ -638,7 +638,7 @@ export function validateCodeSnippet(
   };
 }
 
-function detectLanguageFromIndicators(code: string): string | null {
+export function detectLanguageFromIndicators(code: string): string | null {
   if (code.includes('def ') || /[a-zA-Z_]\w{0,30}\s{0,3}=\s{0,3}\{\s{0,3}[^}]{0,100}\s{0,3}\}/.test(code) || code.includes('println')) {
     return 'groovy';
   }
@@ -670,7 +670,7 @@ function detectLanguageFromIndicators(code: string): string | null {
   return null;
 }
 
-function validateAgainstLanguage(
+export function validateAgainstLanguage(
   code: string,
   config: LanguageValidationConfig,
   isSpecificLanguage: boolean = false
@@ -788,7 +788,7 @@ function validateAgainstLanguage(
   };
 }
 
-function checkLanguageDisqualifiers(code: string, language: string): boolean {
+export function checkLanguageDisqualifiers(code: string, language: string): boolean {
   switch (language) {
     case "Java": {
       const javaDisqualifiers = [

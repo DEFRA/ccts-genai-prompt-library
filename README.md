@@ -123,13 +123,27 @@ VITE_DEFAULT_THEME=light
 
 ## Testing
 
-### Unit Tests
+This project uses Vitest for testing. For more details on testing strategy, see [TESTING.md](docs/TESTING.md).
+
+### Run Tests
 
 ```bash
-npm run test:unit
+# Run all tests once
+npm test
+
+# Run tests and watch for changes
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests for CI with SonarQube report conversion
+npm run test:ci
 ```
 
-### Integration Tests
+### Test Report Conversion
+
+For SonarQube integration, test reports are converted from Vitest's JUnit format to SonarQube's test execution report format. For details on this process, see [TEST_REPORT_CONVERSION.md](docs/TEST_REPORT_CONVERSION.md).
 
 ```bash
 npm run test:integration
@@ -151,92 +165,3 @@ npm run test:integration
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Pipeline Setup via GitHub Actions
-
-### Overview
-The project uses GitHub Actions for CI/CD automation, integrating SonarCloud analysis and deploying to Azure Blob Storage.
-
-### Pipeline Configuration
-Create a `.github/workflows/main.yml` file with the following configuration:
-
-```yaml
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-      - dev
-      - 'feature/*'
-  pull_request:
-    branches: 
-      - main
-      - dev
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18.x'
-
-    - name: Install Dependencies & Build
-      run: |
-        npm install
-        npm run build
-
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.projectKey=qea_prompt-laibrary-v2
-          -Dsonar.organization=qea
-          -Dsonar.sources=.
-
-    - name: Upload to Azure Blob Storage
-      uses: azure/cli@v1
-      env:
-        AZURE_STORAGE_ACCOUNT: sareportingpoc
-        AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
-      run: |
-        for file in dist/*; do
-          az storage blob upload \
-            --account-name $AZURE_STORAGE_ACCOUNT \
-            --container-name cpintegration \
-            --file "$file" \
-            --name "PromptLaibrary2/$(basename "$file")" \
-            --auth-mode key \
-            --account-key $AZURE_STORAGE_KEY \
-            --overwrite
-        done
-
-
-### Required Secrets
-    Add the following secrets in your GitHub repository settings:
-
-## SONAR_TOKEN: 
-    Your SonarCloud authentication token
-## AZURE_STORAGE_KEY: 
-    Your Azure Storage account key
-
-## Pipeline Features
-  1.Triggers on pushes to main, dev, and feature branches
-  2.Node.js 18.x environment setup
-  3.NPM package installation and build
-  4.SonarCloud static code analysis
-  5.Azure Blob Storage deployment
-  6.Automatic artifact publishing
-## Setup Instructions
-  1.Configure GitHub repository secrets
-  2.Enable GitHub Actions in your repository
-  3.Push the workflow file to .github/workflows/main.yml
-  4.Verify the workflow runs on push/pull request

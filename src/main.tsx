@@ -20,14 +20,16 @@ const initApp = async () => {
       <React.StrictMode>
         <App />
       </React.StrictMode>
-    );
-  } catch (error) {
+    );  } catch (error) {
     console.error("Failed to initialize app:", error);
-    document.getElementById("root")!.innerHTML = `
-      <div style="padding: 20px; color: red;">
-        Failed to initialize application. Please try refreshing the page.
-      </div>
-    `;
+    const rootElement = document.getElementById("root");
+    if (rootElement) {
+      rootElement.innerHTML = `
+        <div style="padding: 20px; color: red;">
+          Failed to initialize application. Please try refreshing the page.
+        </div>
+      `;
+    }
   }
 };
 

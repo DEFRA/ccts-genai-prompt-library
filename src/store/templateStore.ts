@@ -43,6 +43,7 @@ interface TemplateStore {
   resetTemplates: () => void;
   initializeDefaultTemplates: (templates: Template[]) => void;
   copyDefaultsToUserTemplates: () => void;
+  clearModalTemplate: () => void;
 }
 
 export const useTemplateStore = create<TemplateStore>()(

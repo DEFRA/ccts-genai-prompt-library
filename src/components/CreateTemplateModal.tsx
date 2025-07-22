@@ -257,8 +257,37 @@ const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({ initialData }
 
     toggleCreateModal();
   };
+  const validateForm = (): boolean => {
+    // Validate required fields
+    if (!formData.name?.trim()) {
+      toast.error('Template name is required');
+      return false;
+    }
+
+    if (!formData.role) {
+      toast.error('Role selection is required');
+      return false;
+    }
+    
+    if (!formData.expertise) {
+      toast.error('Expertise selection is required');
+      return false;
+    }
+    
+    if (!formData.raceAction?.trim()) {
+      toast.error('RACE Action description is required');
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSaveTemplate = async () => {
+    // Validate form before submitting
+    if (!validateForm()) {
+      return;
+    }
+    
     const templateData = {
       ...formData,
       id: selectedTemplate?.id || generateId(),

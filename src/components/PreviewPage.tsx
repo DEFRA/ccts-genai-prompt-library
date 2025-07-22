@@ -37,6 +37,8 @@ interface PreviewPageProps {
   onCopy: () => void;
   isOpen: boolean;
   showCopySuccess?: boolean;
+  initialLlmResponse?: string | null;
+  initialError?: ErrorDetails | null;
 }
 
 interface ChatHistoryState {
@@ -107,7 +109,7 @@ const Header = ({
   </div>
 );
 
-const extractRACEComponents = (content: string): RACEComponents => {
+export const extractRACEComponents = (content: string): RACEComponents => {
   if (!content || typeof content !== 'string') {
     console.error('Invalid content provided to extractRACEComponents:', content);
     throw new Error('Invalid content provided');
@@ -167,7 +169,7 @@ const extractRACEComponents = (content: string): RACEComponents => {
   }
 };
 
-const extractFormatRequirements = (content: string) => {
+export const extractFormatRequirements = (content: string) => {
   const requirements = {
     language: "",
     format: "general" as const,
@@ -383,12 +385,14 @@ export const PreviewPage = ({
   onCopy,
   isOpen,
   showCopySuccess,
+  initialLlmResponse,
+  initialError,
 }: PreviewPageProps) => {
   const { isAdmin } = useStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [llmResponse, setLlmResponse] = useState<string | null>(null);
-  const [error, setError] = useState<ErrorDetails | null>(null);
+  const [llmResponse, setLlmResponse] = useState<string | null>(initialLlmResponse ?? null);
+  const [error, setError] = useState<ErrorDetails | null>(initialError ?? null);
   const [copySuccess, setCopySuccess] = useState(false);
   const [llmCopySuccess, setLlmCopySuccess] = useState(false);
   const [chatInput, setChatInput] = useState("");

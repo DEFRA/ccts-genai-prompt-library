@@ -1,18 +1,31 @@
-const getEnvVar = (key: string, defaultValue: string = ""): string => {
-  const windowEnv = (window as any).__ENV__;
-  if (windowEnv?.[key]) {
-    return windowEnv[key].trim();
+// Function to allow easier testing
+export const getEnvVar = (key: string, defaultValue: string = ""): string => {
+  // Check window.__ENV__ first (highest priority)
+  if (window && typeof window === 'object') {
+    const windowEnv = (window as any).__ENV__;
+    if (windowEnv && typeof windowEnv === 'object' && key in windowEnv && 
+        windowEnv[key] !== undefined && windowEnv[key] !== null) {
+      return String(windowEnv[key]).trim();
+    }
   }
 
-  const viteEnv = import.meta.env;
-  if (viteEnv[key]) {
-    return viteEnv[key].trim();
+  // Then check import.meta.env (fallback)
+  try {
+    const viteEnv = import.meta.env;
+    if (viteEnv && typeof viteEnv === 'object' && key in viteEnv && 
+        viteEnv[key] !== undefined && viteEnv[key] !== null) {
+      return String(viteEnv[key]).trim();
+    }
+  } catch (e) {
+    console.warn('Error accessing import.meta.env:', e);
   }
 
+  // Finally use default value if neither source has the key
   return defaultValue.trim();
 };
 
-const formatAzureEndpoint = (endpoint: string): string => {
+// Export for testing
+export const formatAzureEndpoint = (endpoint: string): string => {
   if (!endpoint) return '';
   while (endpoint.endsWith('/')) {
     endpoint = endpoint.slice(0, -1);
@@ -55,9 +68,7 @@ export interface Config {
 
 export const config: Config = {
   MISTRAL_API_KEY: getEnvVar("VITE_MISTRAL_API_KEY", ""),
-
-  OPENAI_API_KEY: getEnvVar("VITE_OPENAI_API_KEY", ""),
-  OPENAI_BASE_URL: getEnvVar(
+  OPENAI_API_KEY: getEnvVar("VITE_OPENAI_API_KEY", ""),  OPENAI_BASE_URL: getEnvVar(
     "VITE_OPENAI_BASE_URL",
     "https://api.openai.com/v1"
   ),
@@ -82,11 +93,9 @@ export const config: Config = {
   CONFLUENCE_SPACE_KEY: getEnvVar("VITE_CONFLUENCE_SPACE_KEY", ""),
   CONFLUENCE_USERNAME: getEnvVar("VITE_CONFLUENCE_USERNAME", ""),
 
-  AZURE_OPENAI_KEY: getEnvVar("VITE_AZURE_OPENAI_KEY", ""),
-  AZURE_OPENAI_ENDPOINT: formatAzureEndpoint(
+  AZURE_OPENAI_KEY: getEnvVar("VITE_AZURE_OPENAI_KEY", ""),  AZURE_OPENAI_ENDPOINT: formatAzureEndpoint(
     getEnvVar("VITE_AZURE_OPENAI_ENDPOINT", "")
-  ),
-  AZURE_OPENAI_DEPLOYMENT_ID: getEnvVar(
+  ),  AZURE_OPENAI_DEPLOYMENT_ID: getEnvVar(
     "VITE_AZURE_OPENAI_DEPLOYMENT_ID",
     "gpt-4o"
   ),

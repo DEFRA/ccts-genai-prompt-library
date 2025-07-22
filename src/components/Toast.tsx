@@ -65,6 +65,7 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
+      data-testid="toast-container"
       className={`fixed top-4 right-4 z-[100] flex items-center p-4 rounded-lg shadow-lg border 
         ${getBackgroundColor()} ${getTextColor()} 
         transform transition-all duration-300 ease-in-out 
