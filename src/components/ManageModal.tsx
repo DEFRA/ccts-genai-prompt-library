@@ -84,16 +84,16 @@ const importDataSchema = z.object({
     .optional(),
 });
 
-const createExpertiseId = (expertise: string, index: number) =>
+export const createExpertiseId = (expertise: string, index: number) =>
   `${expertise}-${index}`;
 
 
-const generateId = () => {
+export const generateId = () => {
   const array = new Uint8Array(8);
   crypto.getRandomValues(array);
   return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('').substring(0, 9);
 };
-const generateExpertiseId = (expertise: string) =>
+export const generateExpertiseId = (expertise: string) =>
   `expertise-${expertise}-${generateId()}`;
 
 const tabButtonStyles = (isActive: boolean) => `
@@ -299,7 +299,11 @@ const RoleCard: React.FC<RoleCardProps> = ({
   );
 };
 
-export const ManageModal = () => {
+interface ManageModalProps {
+  isLoadingOverride?: boolean;
+}
+
+export const ManageModal = ({ isLoadingOverride }: ManageModalProps = {}) => {
   const {
     isManageModalOpen,
     toggleManageModal,
@@ -739,17 +743,19 @@ export const ManageModal = () => {
 
   if (!isManageModalOpen) return null;
 
-  if (isLoading) {
+  const effectiveIsLoading = typeof isLoadingOverride === 'boolean' ? isLoadingOverride : isLoading;
+
+  if (effectiveIsLoading) {
     return (
       <Modal
         isOpen={isManageModalOpen}
         onClose={toggleManageModal}
-        title="Manage Laibrary"
+        title="Manage Templates & Roles"
         size="full"
         className="w-full h-full max-w-none max-h-none overflow-visible"
       >
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" data-testid="spinner"></div>
         </div>
       </Modal>
     );

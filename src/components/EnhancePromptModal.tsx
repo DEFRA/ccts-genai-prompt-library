@@ -1,32 +1,5 @@
-const MarkdownCodeBlock = ({ inline, className, children, ...props }: any) => {
-  const match = /language-(\w+)/.exec(className ?? '');
-  if (!inline && match) {
-    return (
-      <SyntaxHighlighter
-        language={match[1]}
-        style={tomorrow}
-        PreTag="div"
-        customStyle={{
-          margin: 0,
-          background: 'var(--vscode-editor-background)',
-          padding: '1rem',
-        }}
-        {...props}
-      >
-        {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
-    );
-  }
-  return <code className={className} {...props}>{children}</code>;
-};
-const LoadingIndicator = () => (
-  <div className="flex items-center gap-1 text-vscode-fg mt-4">
-    <div className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" />
-    <div className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }} />
-    <div className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }} />
-  </div>
-);
 import React, { useState, useCallback, useRef } from 'react';
+import { LoadingIndicator, MarkdownCodeBlock } from './EnhancePromptModal.components';
 const MarkdownCodeComponent = (props: any) => <MarkdownCodeBlock {...props} />;
 import { Modal } from './Modal';
 import { Send, X, Copy, CheckCircle, Download, ChevronDown, Bot, Paperclip } from 'lucide-react';
@@ -39,6 +12,11 @@ import { submitToLLM } from '../services/apiSelector';
 import { useStore } from '../store/useStore';
 import { ChatMessage } from '../types';
 import { copyToClipboard } from '../utils/clipboard';
+import { 
+  createErrorDetails,
+  extractRACEComponents,
+  type RACEComponents 
+} from './EnhancePromptModal.utils';
 
 export interface EnhancePromptModalProps {
   isOpen: boolean;
@@ -59,60 +37,11 @@ interface CodeBlock {
   extension: string;
 }
 
-interface RACEComponents {
-  role: string;
-  action: string;
-  context: string;
-  execute: string;
-}
-
 interface ErrorDetails {
   message: string;
   timestamp: string;
   context?: string;
 }
-
-const createErrorDetails = (error: unknown, context?: string): ErrorDetails => {
-  return {
-    message: error instanceof Error ? error.message : 'An unexpected error occurred',
-    timestamp: new Date().toISOString(),
-    context
-  };
-};
-
-const generateUniqueId = () => `enhance-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1)).toString().slice(2, 11)}`;
-
-const getFileExtension = (language: string): string => {
-  const extensionMap: { [key: string]: string } = {
-    gherkin: '.feature',
-    python: '.py',
-    javascript: '.js',
-    typescript: '.ts',
-    ruby: '.rb',
-    csharp: '.cs',
-    java: '.java',
-    csv: '.csv'
-  };
-  return extensionMap[language.toLowerCase()] ?? '.txt';
-};
-
-const getSmartFileName = (language: string, content: string): string => {
-  const firstLine = content.split('\n')[0].trim();
-  
-  if (language.toLowerCase() === 'gherkin') {
-    const featureRegex = /Feature:\s*([^\n]{0,1000})(?:\n|$)/;
-    const featureMatch = featureRegex.exec(content);
-    const featureName = featureMatch 
-      ? featureMatch[1].trim().replace(/[^a-zA-Z0-9]/g, '')
-      : 'FeatureTests';
-    return `${featureName}.feature`;
-  } else {
-    const defaultName = firstLine
-      .replace(/[^a-zA-Z0-9]/g, '')
-      .slice(0, 30) ?? 'script';
-    return `${defaultName}${getFileExtension(language)}`;
-  }
-};
 
 const handleCopyCode = async (content: string) => {
   try {
@@ -182,25 +111,6 @@ const CodeBlockCard = ({ block, onCopy, onDownload }: {
       </div>
     );
   };
-
-const extractRACEComponents = (content: string): RACEComponents => {
-  const components: RACEComponents = {
-    role: '',
-    action: '',
-    context: '',
-    execute: ''
-  };
-
-  const sections = content.split(/^#\s{0,5}(?:Role|Action|Context|Execute):\s{0,20}$/im);
-  
-  for (let i = 1; i < sections.length; i += 2) {
-    const sectionName = sections[i].toLowerCase();
-    const sectionContent = sections[i+1]?.trim() ?? '';
-    components[sectionName as keyof RACEComponents] = sectionContent;
-  }
-
-  return components;
-};
 
 export const buildSystemPrompt = async (prompt: string, isChat: boolean = false) => {
   const searchContext = `
@@ -849,6 +759,7 @@ Please provide a response that:
           <button
             onClick={handleClose}
             className="p-2.5 rounded-sm text-vscode-fg hover:text-vscode-fg hover:bg-vscode-list-hover"
+            aria-label="close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -871,8 +782,14 @@ Please provide a response that:
               <textarea
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleEnhancePrompt();
+                  }
+                }}
                 placeholder="Enter your prompt to enhance..."
-                    className="w-full h-32 px-3 py-2 text-sm bg-vscode-input-bg text-vscode-input-fg border border-vscode-border rounded-sm resize-none
+                className="w-full h-32 px-3 py-2 text-sm bg-vscode-input-bg text-vscode-input-fg border border-vscode-border rounded-sm resize-none
                       placeholder-vscode-input-fg/50 focus:outline-none focus:border-vscode-active focus:ring-1 focus:ring-vscode-active"
               />
                   <div className="flex justify-end">
@@ -1007,6 +924,12 @@ Please provide a response that:
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={async (e) => {
+                      if ((e.key === 'Enter' && e.ctrlKey) && !isThinking && chatInput.trim()) {
+                        e.preventDefault();
+                        await handleChatSubmit(e);
+                      }
+                    }}
                     placeholder="Type your message..."
                     className="w-full px-3 py-2 text-sm bg-vscode-input-bg text-vscode-input-fg border border-vscode-border rounded-sm
                       placeholder-vscode-input-fg/50 focus:outline-none focus:border-vscode-active focus:ring-1 focus:ring-vscode-active"
@@ -1016,6 +939,7 @@ Please provide a response that:
                     type="file"
                     onChange={handleFileSelect}
                     className="hidden"
+                    data-testid="file-input"
                     accept=".txt,.md,.json,.yaml,.xml,.csv"
                   />
                 <button
@@ -1029,18 +953,12 @@ Please provide a response that:
                 <button
                   type="submit"
                   disabled={!chatInput.trim() || isThinking}
-                  className="px-4 py-2 text-sm bg-vscode-button text-vscode-button-fg rounded-sm hover:bg-vscode-button-hover
-                    disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-[80px] justify-center"
+                  className="px-4 py-2 text-sm bg-vscode-button text-vscode-button-fg rounded-sm 
+                    hover:bg-vscode-button-hover disabled:opacity-50 disabled:cursor-not-allowed 
+                    flex items-center gap-2 min-w-[80px] justify-center"
+                  aria-label="Send message"
                 >
-                  {isThinking ? (
-                    <div className="flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" />
-                      <div className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.2s' }} />
-                      <div className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0.4s' }} />
-              </div>
-                  ) : (
-                    <Send className="w-4 h-4" />
-          )}
+                  {isThinking ? <LoadingIndicator /> : <Send className="w-4 h-4" />}
                 </button>
         </div>
             </form>

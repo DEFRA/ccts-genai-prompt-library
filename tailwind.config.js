@@ -1,5 +1,3 @@
-import forms from '@tailwindcss/forms';
-
 export default {
   content: [
     "./index.html",

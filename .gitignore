@@ -26,3 +26,7 @@ dist-ssr
 # SonarQube
 .scannerwork/
 .sonar/
+
+# Test coverage reports
+coverage/
+sonar-report.xml

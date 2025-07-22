@@ -327,8 +327,7 @@ export const CreatePromptModal: React.FC = () => {
       )
       .map(template => ({
         value: template.id,
-        label: template.name,
-        description: template.description
+        label: template.name
       }));
   }, [userTemplates, roleFromExpertise, selectedExpertise]);
 

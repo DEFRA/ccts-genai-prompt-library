@@ -5,9 +5,10 @@ export function detectFileDetails(code: string): { fileName: string; extension: 
   let fileName = fileNameMatch ? fileNameMatch[1].trim() : 'code';
   let extension = fileName.split('.').pop() || '';
 
-  if (!extension) {
+  if (!extension || fileName === extension) {
+    // Try to find language in the whole code, not just the first line
     const languageRegex = /language-(\w+)/;
-    const languageMatch = languageRegex.exec(firstLine);
+    const languageMatch = languageRegex.exec(code);
     if (languageMatch) {
       extension = languageMatch[1];
       fileName = `${fileName}.${extension}`;

@@ -57,19 +57,20 @@ const getEnvVar = (key: string, defaultValue: string = ''): string => {
   }
 };
 
-const formatAzureEndpoint = (endpoint: string): string => {
+// Internal testable version that accepts environment
+export const formatAzureEndpointInternal = (endpoint: string, env: { VITE_AZURE_OPENAI_ENDPOINT?: string } | ImportMetaEnv): string => {
   if (!endpoint) return '';
   
   try {
-
     if (endpoint.startsWith('%%') && endpoint.endsWith('%%')) {
-      const viteEndpoint = import.meta.env.VITE_AZURE_OPENAI_ENDPOINT;
+      const viteEndpoint = env.VITE_AZURE_OPENAI_ENDPOINT;
       if (viteEndpoint) {
         endpoint = viteEndpoint;
       } else {
         console.warn('Azure OpenAI endpoint contains placeholder value');
         return '';
-      }    }
+      }
+    }
 
     while (endpoint.endsWith('/')) {
       endpoint = endpoint.substring(0, endpoint.length - 1);
@@ -88,7 +89,12 @@ const formatAzureEndpoint = (endpoint: string): string => {
   }
 };
 
-export const apiConfig = (() => {
+// Public wrapper that uses current environment
+export const formatAzureEndpoint = (endpoint: string): string => {
+  return formatAzureEndpointInternal(endpoint, import.meta.env);
+};
+
+export function getApiConfig() {
   try {
     const azureKey = getEnvVar('VITE_AZURE_OPENAI_KEY') || import.meta.env.VITE_AZURE_OPENAI_KEY;
     const azureEndpoint = getEnvVar('VITE_AZURE_OPENAI_ENDPOINT') ?? import.meta.env.VITE_AZURE_OPENAI_ENDPOINT;
@@ -175,11 +181,16 @@ export const apiConfig = (() => {
       }
     };
   }
-})();
+}
 
-export const AZURE_API_VERSION = apiConfig.azure.apiVersion;
-export const isAzureOpenAIConfigured = (): boolean => !!(apiConfig.azure.apiKey && apiConfig.azure.endpoint);
-export const isOpenAIConfigured = (): boolean => !!apiConfig.openai.apiKey;
+export const isAzureOpenAIConfigured = (config?: ReturnType<typeof getApiConfig>): boolean => {
+  const currentConfig = config || getApiConfig();
+  return !!(currentConfig.azure.apiKey && currentConfig.azure.endpoint);
+};
+export const isOpenAIConfigured = (config?: ReturnType<typeof getApiConfig>): boolean => {
+  const currentConfig = config || getApiConfig();
+  return !!currentConfig.openai.apiKey;
+};
 export const COMPLIANT_SYSTEM_MESSAGE = `You are a professional assistant helping with work-related tasks. You will:
 1. Provide accurate and helpful information
 2. Follow professional guidelines and best practices

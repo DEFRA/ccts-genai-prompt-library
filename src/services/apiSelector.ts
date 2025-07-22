@@ -1,7 +1,6 @@
 import { ChatMessage } from '../types';
 import { performSerperSearch as performWebSearch, fetchDDaTFrameworkInfo } from './serperSearch';
-import { config } from '../config';
-import { apiConfig, isAzureOpenAIConfigured } from '../config/apiConfig';
+import { getApiConfig, isAzureOpenAIConfigured } from '../config/apiConfig';
 
 const CACHE_PREFIX = 'chat_cache_';
 const CACHE_DURATION = 60 * 60 * 1000; 
@@ -139,8 +138,6 @@ const generateCacheKey = (messages: ChatMessage[]): string => {
   return messages.map((m) => `${m.role}:${m.content}`).join("|");
 };
 
-const AZURE_API_VERSION = "2023-12-01-preview";
-
 const COMPLIANT_SYSTEM_MESSAGE = `You are a professional assistant helping with work-related tasks. You will:
 1. Provide accurate and helpful information
 2. Follow professional guidelines and best practices
@@ -208,6 +205,7 @@ const tryDifferentModels = async (
 ): Promise<any> => {
   const errors: any[] = [];
   let lastRateLimitError = null;
+  let lastContentFilterError = null;
 
   for (const model of models) {
     try {
@@ -217,8 +215,18 @@ const tryDifferentModels = async (
       if (error.error?.message?.includes('rate limit')) {
         lastRateLimitError = error;
       }
+      if (error.error?.message?.includes('content filtering system') || 
+          error.error?.message?.includes('content policy')) {
+        lastContentFilterError = error;
+        console.log('DEBUG: Found content filter error:', error);
+      }
       errors.push({ model, error });
     }
+  }
+
+  if (lastContentFilterError) {
+    console.log('DEBUG: Throwing content filter error:', lastContentFilterError);
+    throw lastContentFilterError;
   }
 
   if (lastRateLimitError) {
@@ -233,32 +241,37 @@ const tryDifferentModels = async (
 };
 
 async function tryAzureOpenAI(prompt: string, options: any, cache: ResponseCache, cacheKey: string): Promise<string> {
-  const deploymentId = apiConfig.azure.deploymentId;
-  const endpoint = apiConfig.azure.endpoint;
+  const deploymentId = getApiConfig().azure.deploymentId;
+  const endpoint = getApiConfig().azure.endpoint;
   const cleanPrompt = prompt.replace(/[^\w\s.,?!-]/g, ' ').trim();
   const messages = [
     { role: 'system', content: COMPLIANT_SYSTEM_MESSAGE },
     { role: 'user', content: cleanPrompt }
   ];
 
-  const response = await tryDifferentModels(
-    `${endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${AZURE_API_VERSION}`,
-    {
-      'Content-Type': 'application/json',
-      'api-key': apiConfig.azure.apiKey
-    },
-    messages,
-    apiConfig.azure.models,
-    options
-  );
+  try {
+    const response = await tryDifferentModels(
+      `${endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${getApiConfig().azure.apiVersion}`,
+      {
+        'Content-Type': 'application/json',
+        'api-key': getApiConfig().azure.apiKey
+      },
+      messages,
+      getApiConfig().azure.models,
+      options
+    );
 
-  if (!response.choices?.[0]?.message?.content) {
-    throw new Error('Invalid response format from Azure OpenAI API');
+    if (!response.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response format from Azure OpenAI API');
+    }
+
+    const result = response.choices[0].message.content;
+    cache.set(cacheKey, result);
+    return result;
+  } catch (error) {
+    console.log('DEBUG tryAzureOpenAI caught error:', error);
+    throw error;
   }
-
-  const result = response.choices[0].message.content;
-  cache.set(cacheKey, result);
-  return result;
 }
 
 async function tryOpenAI(prompt: string, options: any, cache: ResponseCache, cacheKey: string): Promise<string> {
@@ -268,13 +281,13 @@ async function tryOpenAI(prompt: string, options: any, cache: ResponseCache, cac
   ];
 
   const response = await tryDifferentModels(
-    `${apiConfig.openai.baseUrl}/chat/completions`,
+    `${getApiConfig().openai.baseUrl}/chat/completions`,
     {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiConfig.openai.apiKey}`
+      'Authorization': `Bearer ${getApiConfig().openai.apiKey}`
     },
     messages,
-    apiConfig.openai.models,
+    getApiConfig().openai.models,
     options
   );
 
@@ -286,6 +299,62 @@ async function tryOpenAI(prompt: string, options: any, cache: ResponseCache, cac
   cache.set(cacheKey, result);
   return result;
 }
+
+// Extract error message parsing logic
+const extractErrorMessage = (error: unknown): string => {
+  if (error && typeof error === 'object') {
+    const errorObj = error as Record<string, unknown>;
+    if ('message' in errorObj && typeof errorObj.message === 'string') {
+      return errorObj.message;
+    }
+    if ('error' in errorObj && errorObj.error && typeof errorObj.error === 'object') {
+      const nestedError = errorObj.error as Record<string, unknown>;
+      if ('message' in nestedError && typeof nestedError.message === 'string') {
+        return nestedError.message;
+      }
+    }
+  }
+  return String(error);
+};
+
+// Extract error handling logic
+const handleLLMError = (error: unknown): never => {
+  console.error('Error in submitToLLM:', error);
+  
+  const errorMsg = extractErrorMessage(error);
+  
+  // Debug logging
+  console.log('DEBUG submitToLLM error message:', errorMsg);
+  
+  // Handle rate limit errors
+  if (typeof errorMsg === 'string' && errorMsg.includes('Rate limit exceeded')) {
+    throw new Error('API rate limit exceeded. Please try again later or contact support to increase your quota.');
+  }
+  
+  throw error;
+};
+
+// Extract Azure OpenAI error checking
+const shouldRethrowAzureError = (error: unknown): boolean => {
+  const msg = extractErrorMessage(error);
+  let nestedMsg = '';
+  
+  if (error && typeof error === 'object') {
+    const errorObj = error as Record<string, unknown>;
+    if ('error' in errorObj && errorObj.error && typeof errorObj.error === 'object') {
+      const nestedError = errorObj.error as Record<string, unknown>;
+      if ('message' in nestedError && typeof nestedError.message === 'string') {
+        nestedMsg = nestedError.message;
+      }
+    }
+  }
+  
+  const fullMsg = msg ?? nestedMsg;
+  
+  return fullMsg.includes('content policy') ||
+         fullMsg.includes('Rate limit exceeded') ||
+         fullMsg.includes('content filtering system');
+};
 
 export const submitToLLM = async (
   prompt: string,
@@ -308,7 +377,7 @@ export const submitToLLM = async (
       try {
         return await tryAzureOpenAI(prompt, options, cache, cacheKey);
       } catch (error) {
-        if (error.message.includes('content policy') || error.message.includes('Rate limit exceeded')) {
+        if (shouldRethrowAzureError(error)) {
           throw error;
         }
       }
@@ -316,11 +385,7 @@ export const submitToLLM = async (
 
     throw new Error('No API keys configured. Please configure either Azure OpenAI key.');
   } catch (error) {
-    console.error('Error in submitToLLM:', error);
-    if (error.message.includes('Rate limit exceeded')) {
-      throw new Error('API rate limit exceeded. Please try again later or contact support to increase your quota.');
-    }
-    throw error;
+    return handleLLMError(error);
   }
 };
 
@@ -330,7 +395,7 @@ const API_FALLBACKS = {
     models: ["gpt-4o", "gpt-4o-mini"],
   },
   azure: {
-    baseUrl: config.AZURE_OPENAI_ENDPOINT || "",
+    baseUrl: getApiConfig().azure.endpoint ?? "",
     models: ["gpt-4o", "gpt-4o-mini"],
     apiVersion: "2023-12-01-preview",
   },
@@ -343,18 +408,18 @@ const API_FALLBACKS = {
 const tryAPIEndpoints = async (messages: any[], options: any = {}) => {
   const errors: any[] = [];
 
-  if (config.AZURE_OPENAI_KEY && config.AZURE_OPENAI_ENDPOINT) {
+  if (getApiConfig().azure.apiKey && getApiConfig().azure.endpoint) {
     try {
-      const deploymentId = config.AZURE_OPENAI_DEPLOYMENT_ID ?? "gpt-4o";
+      const deploymentId = getApiConfig().azure.deploymentId ?? "gpt-4o";
       const apiVersion = API_FALLBACKS.azure.apiVersion;
 
       const response = await fetch(
-        `${config.AZURE_OPENAI_ENDPOINT}/openai/deployments/${deploymentId}/chat/completions?api-version=${apiVersion}`,
+        `${getApiConfig().azure.endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${apiVersion}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "api-key": config.AZURE_OPENAI_KEY,
+            "api-key": getApiConfig().azure.apiKey,
           },
           body: JSON.stringify({
             messages,
@@ -376,20 +441,20 @@ const tryAPIEndpoints = async (messages: any[], options: any = {}) => {
     }
   }
 
-  if (config.OPENAI_API_KEY) {
+  if (getApiConfig().openai.apiKey) {
     try {
       const response = await fetch(
         `${
-          config.OPENAI_BASE_URL ?? API_FALLBACKS.openai.baseUrl
+          getApiConfig().openai.baseUrl ?? API_FALLBACKS.openai.baseUrl
         }/chat/completions`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${config.OPENAI_API_KEY}`,
+            Authorization: `Bearer ${getApiConfig().openai.apiKey}`,
           },
           body: JSON.stringify({
-            model: config.OPENAI_MODEL || "gpt-4o",
+            model: getApiConfig().openai.model || "gpt-4o",
             messages,
             temperature: options.temperature ?? 0.7,
             max_tokens: options.maxTokens ?? 2000,
@@ -409,7 +474,7 @@ const tryAPIEndpoints = async (messages: any[], options: any = {}) => {
     }
   }
 
-  if (!config.AZURE_OPENAI_KEY) {
+  if (!getApiConfig().azure.apiKey) {
     throw new Error("No API keys configured. Please configure Azure OpenAI.");
   }
 
@@ -458,14 +523,15 @@ const filterContent = (
   return { isAllowed: true };
 };
 
-function buildSystemMessage(initialContent: string, searchResults: any[], ddatInfo: string): string {
+function buildSystemMessage(initialContent: string, ddatInfo: string, searchResults: any[] = []): string {
+  const safeResults = Array.isArray(searchResults) ? searchResults : [];
   return `${COMPLIANT_SYSTEM_MESSAGE}
 
 Context from initial prompt:
 ${initialContent || "Focus on providing professional assistance."}
 
 GDS Standards and Best Practices:
-${searchResults.map((result) => `- ${result.snippet}`).join("\n")}
+${safeResults.map((result) => `- ${result.snippet}`).join("\n")}
 
 DDaT Framework Context:
 ${ddatInfo}
@@ -479,7 +545,7 @@ Guidelines:
 }
 
 async function callAzureOpenAI(messages: any[], cache: ResponseCache, cacheKey: string): Promise<string> {
-  const deploymentId = config.AZURE_OPENAI_DEPLOYMENT_ID ?? 'gpt-4o';  let endpoint = config.AZURE_OPENAI_ENDPOINT;
+  const deploymentId = getApiConfig().azure.deploymentId ?? 'gpt-4o';  let endpoint = getApiConfig().azure.endpoint;
   if (endpoint?.endsWith('/')) {
     let i = endpoint.length - 1;
     while (i >= 0 && endpoint[i] === '/') {
@@ -488,12 +554,12 @@ async function callAzureOpenAI(messages: any[], cache: ResponseCache, cacheKey: 
     endpoint = endpoint.substring(0, i + 1);
   }
   const response = await fetch(
-    `${endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${AZURE_API_VERSION}`,
+    `${endpoint}/openai/deployments/${deploymentId}/chat/completions?api-version=${getApiConfig().azure.apiVersion}`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': config.AZURE_OPENAI_KEY
+        'api-key': getApiConfig().azure.apiKey
       },
       body: JSON.stringify({
         messages,
@@ -520,14 +586,14 @@ async function callAzureOpenAI(messages: any[], cache: ResponseCache, cacheKey: 
 }
 
 async function callOpenAI(messages: any[], cache: ResponseCache, cacheKey: string): Promise<string> {
-  const response = await fetch(`${config.OPENAI_BASE_URL ?? 'https://api.openai.com/v1'}/chat/completions`, {
+  const response = await fetch(`${getApiConfig().openai.baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.OPENAI_API_KEY}`
+      'Authorization': `Bearer ${getApiConfig().openai.apiKey}`
     },
     body: JSON.stringify({
-      model: 'gpt-4o',
+      model: getApiConfig().openai.model || 'gpt-4o',
       messages,
       temperature: 0.7,
       max_tokens: 2000,
@@ -581,7 +647,7 @@ export const submitChatMessage = async (
       fetchDDaTFrameworkInfo('technical_architect')
     ]);
 
-    const systemMessage = buildSystemMessage(initialContent, searchResults, ddatInfo);
+    const systemMessage = buildSystemMessage(initialContent, ddatInfo, searchResults);
 
     const messages = [
       { role: 'system', content: systemMessage },
@@ -589,10 +655,10 @@ export const submitChatMessage = async (
       { role: 'user', content: cleanMessage }
     ];
 
-    if (config.AZURE_OPENAI_KEY && config.AZURE_OPENAI_ENDPOINT) {
+    if (getApiConfig().azure.apiKey && getApiConfig().azure.endpoint) {
       return await callAzureOpenAI(messages, cache, cacheKey);
     }
-    if (config.OPENAI_API_KEY) {
+    if (getApiConfig().openai.apiKey) {
       return await callOpenAI(messages, cache, cacheKey);
     }
     throw new Error('No API keys configured');

@@ -48,8 +48,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto font-vscode">
-      <div className="flex min-h-screen items-center justify-center p-0">
-        {/* Backdrop */}
+      <div className="flex min-h-screen items-center justify-center p-0">        {/* Backdrop */}
         <button 
           className="fixed inset-0 bg-black/50" 
           onClick={(e) => {
@@ -63,6 +62,7 @@ export const Modal: React.FC<ModalProps> = ({
             }
           }}
           aria-label="Close modal"
+          data-testid="modal-backdrop"
           tabIndex={0}
         />
         

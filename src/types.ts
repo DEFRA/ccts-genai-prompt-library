@@ -91,7 +91,7 @@ export interface Role {
 export interface Template {
   id: string;
   name: string;
-  description?: string;
+  content: string; // Add this line
   role: string;
   expertise?: string;
   framework?: string;

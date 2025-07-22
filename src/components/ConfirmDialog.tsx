@@ -19,7 +19,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto font-vscode text-vscode">
+    <div className="fixed inset-0 z-50 overflow-y-auto font-vscode text-vscode" data-testid="confirm-dialog">
       <div className="flex min-h-screen items-center justify-center p-4">
         <button className="fixed inset-0 bg-vscode-bg/80" onClick={onCancel} aria-label="Close dialog" />
         
