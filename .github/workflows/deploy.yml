@@ -35,12 +35,11 @@ jobs:
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
-        GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=qea_prompt-laibrary-v2
-          -Dsonar.organization=qea
+          -Dsonar.projectKey=prompt-library
+          -Dsonar.organization=defra
           -Dsonar.sources=src
           -Dsonar.tests=src
           -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx
