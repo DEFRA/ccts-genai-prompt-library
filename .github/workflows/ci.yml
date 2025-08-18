@@ -51,25 +51,18 @@ jobs:
           -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**,**/__mocks__/**,**/types/**/*,src/test-*.ts*
           -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
           -Dsonar.testExecutionReportPaths=sonar-report.xml
+          -Dsonar.coverage.reportPaths=coverage/lcov.info
 
     - name: Publish Test Results
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Vitest Tests
-        path: sonar-report.xml
-        reporter: java-junit
-
-    - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: build-artifacts
-        path: dist/
+        name: test results
+        path: sonar-report.xml
 
     - name: Upload Coverage Reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: CodeCoverageHTMLReport
+        name: coverage-reports
         path: coverage/ 
