@@ -38,7 +38,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=prompt-library
+          -Dsonar.projectKey=DEFRA_prompt-library
           -Dsonar.organization=defra
           -Dsonar.sources=src
           -Dsonar.tests=src
