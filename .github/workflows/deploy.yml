@@ -38,7 +38,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=prompt-library
+          -Dsonar.projectKey=DEFRA_prompt-library
           -Dsonar.organization=defra
           -Dsonar.sources=src
           -Dsonar.tests=src
@@ -46,6 +46,21 @@ jobs:
           -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**,**/__mocks__/**,**/types/**/*,src/test-*.ts*
           -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
           -Dsonar.testExecutionReportPaths=sonar-report.xml
+          -Dsonar.coverage.reportPaths=coverage/lcov.info
+
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test results
+        path: sonar-report.xml
+
+    - name: Upload Coverage Reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports
+        path: coverage/ 
 
     - name: Deploy to Azure Blob Storage
       env:
